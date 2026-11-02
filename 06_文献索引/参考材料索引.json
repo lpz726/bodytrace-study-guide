@@ -1,0 +1,626 @@
+﻿{
+  "title": "BodyTrace 算法与模型训练学习资料",
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "scope": "12 个核心学习条目（14 篇论文）、3 篇进阶论文、基础和训练资料；官方链接与中文标注。",
+  "annotation_policy": "方法描述依据一手资料；学习优先级、项目用途、实践任务为项目建议。",
+  "basics": [
+    {
+      "name": "斯坦福 CS231n",
+      "focus": "反向传播、CNN、Transformer、优化和迁移学习。",
+      "url": "https://cs231n.stanford.edu/schedule"
+    },
+    {
+      "name": "Szeliski Computer Vision 第二版",
+      "focus": "成像、模型拟合、深度估计与三维重建；作者官网提供电子版入口。",
+      "url": "https://szeliski.org/Book/"
+    },
+    {
+      "name": "Multiple View Geometry 第二版",
+      "focus": "相机、极线几何、三角化、重投影误差与 bundle adjustment。",
+      "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/"
+    },
+    {
+      "name": "PyTorch3D 教程目录",
+      "focus": "可微渲染、网格和三维损失。",
+      "url": "https://pytorch3d.org/tutorials/"
+    },
+    {
+      "name": "PyTorch3D 网格变形实践",
+      "focus": "Chamfer、边长、法线一致性与 Laplacian 正则。",
+      "url": "https://pytorch3d.org/tutorials/deform_source_mesh_to_target_mesh"
+    },
+    {
+      "name": "PyTorch3D 照片监督网格实践",
+      "focus": "轮廓、RGB 与可微网格优化。",
+      "url": "https://pytorch3d.org/tutorials/fit_textured_mesh"
+    }
+  ],
+  "papers": [
+    {
+      "id": "P01",
+      "name": "DeepSDF",
+      "year": "2019",
+      "venue": "CVPR 2019",
+      "priority": "A 基础必读",
+      "group": "核心",
+      "title": "DeepSDF: Learning Continuous Signed Distance Functions for Shape Representation",
+      "kind": "跨形状监督训练；新对象可优化潜变量",
+      "template": "不以 SMPL 人体模板为核心输入",
+      "relation": "建议优先实验",
+      "inputs": "训练：三维查询点、SDF 标签、形状身份；拟合新对象：部分几何观测。",
+      "outputs": "连续 SDF、零水平集网格、形状潜变量。",
+      "learn": [
+        "SDF 的符号、距离和零水平集。",
+        "表面附近与空间内的采样及截断距离损失。",
+        "Auto-decoder 和形状潜变量的联合训练。",
+        "新对象潜变量优化与网格提取。"
+      ],
+      "application": "为自由曲面选择连续表示，研究用人体扫描训练低频形状先验。",
+      "boundary": "本身不是从照片直接重建人体的完整方案；隐藏区域补全受训练分布影响。",
+      "exercise": "先拟合一个有独立网格真值的对象，比较采样密度和损失截断对表面误差的影响。",
+      "status": "官方代码入口已核验；本资料包未执行训练或复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/1901.05103"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/facebookresearch/DeepSDF"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "PIFu",
+      "year": "2019",
+      "venue": "ICCV 2019",
+      "priority": "A 首个模型训练项目",
+      "group": "核心",
+      "title": "PIFu: Pixel-Aligned Implicit Function for High-Resolution Clothed Human Digitization",
+      "kind": "跨人体样本的隐式表面监督训练",
+      "template": "不以 SMPL 作为核心输入",
+      "relation": "建议优先实验",
+      "inputs": "照片、相机参数、三维查询点；训练还需内外标签和对应人体扫描。",
+      "outputs": "Occupancy 隐式场及人体表面网格。",
+      "learn": [
+        "三维点投影与 pixel-aligned 特征采样。",
+        "图像编码器、深度特征及 MLP 的组合。",
+        "多视图特征融合。",
+        "训练渲染、空间点采样和内外标签。"
+      ],
+      "application": "学习从零构造照片条件的人体表面预测网络，建立可训练的基线。",
+      "boundary": "官方预训练相机与数据分布不等于手机透视照片；主要研究着衣外表面。",
+      "exercise": "跑通官方渲染、查询点采样、训练和导出，先在已知相机的合成人体上评价。",
+      "status": "官方仓库提供训练与数据生成说明；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/1905.05172"
+        },
+        {
+          "label": "作者项目",
+          "url": "https://shunsukesaito.github.io/PIFu/"
+        },
+        {
+          "label": "官方代码与训练",
+          "url": "https://github.com/shunsukesaito/PIFu"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "MVSNet",
+      "year": "2018",
+      "venue": "ECCV 2018",
+      "priority": "A 多视图基础",
+      "group": "核心",
+      "title": "MVSNet: Depth Inference for Unstructured Multi-view Stereo",
+      "kind": "跨场景训练的多视图深度网络",
+      "template": "不依赖人体模板",
+      "relation": "建议优先实验",
+      "inputs": "有重叠的多张图像、相机内外参和深度范围；训练通常需要深度监督。",
+      "outputs": "参考视图深度和置信信息，可进一步融合为表面。",
+      "learn": [
+        "可微单应性变换和深度假设。",
+        "Cost volume 的构造与多视图聚合。",
+        "3D CNN 正则化、深度回归和融合。"
+      ],
+      "application": "为当前轮廓与单目预测增加跨照片的视差证据。",
+      "boundary": "皮肤弱纹理、45°间隔、遮挡和非刚性变姿会影响匹配；不能直接套用静态物体训练设置。",
+      "exercise": "在固定相机和静态人体数据上训练小基线，再分开增加角度、纹理和姿态困难。",
+      "status": "会议论文和作者代码已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "会议论文",
+          "url": "https://openaccess.thecvf.com/content_ECCV_2018/html/Yao_Yao_MVSNet_Depth_Inference_ECCV_2018_paper.html"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/yoyo000/mvsnet"
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "name": "DiffuStereo",
+      "year": "2022",
+      "venue": "ECCV 2022",
+      "priority": "A 八视图重点精读",
+      "group": "核心",
+      "title": "DiffuStereo: High Quality Human Reconstruction via Diffusion-based Stereo Using Sparse Cameras",
+      "kind": "稀疏人体多视图立体匹配网络训练与推理",
+      "template": "学习重点为跨视图匹配；依赖相机及初始几何条件",
+      "relation": "建议优先实验",
+      "inputs": "稀疏人体多视图照片及相机参数；论文采用八相机设置。",
+      "outputs": "多视图深度及融合的人体表面。",
+      "learn": [
+        "扩散式迭代立体匹配和深度修正。",
+        "大基线与多分辨率网络。",
+        "初始几何、立体约束和多视图融合。"
+      ],
+      "application": "最贴近八个环绕视角的人体重建问题，重点比较其几何证据和当前 visual hull。",
+      "boundary": "同步八相机数据不能直接等价于单人顺序转身照片；身体状态与标定仍是条件。",
+      "exercise": "先复核论文输入条件和官方示例，再拆出双视图深度模块做相同输入的对照。",
+      "status": "官方仓库训练章节仍有 TODO，45°权重说明仍有待提供项；不承诺完整训练复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2207.08000"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/DSaurus/DiffuStereo"
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "name": "DSINE",
+      "year": "2024",
+      "venue": "CVPR 2024",
+      "priority": "A 法线模型重点",
+      "group": "核心",
+      "title": "Rethinking Inductive Biases for Surface Normal Estimation",
+      "kind": "监督法线网络训练与微调",
+      "template": "不依赖人体模板",
+      "relation": "建议优先实验；当前 free-body 未调用 DSINE",
+      "inputs": "RGB、相机内参；训练需要法线标签及有效掩码。",
+      "outputs": "逐像素表面法线；部分模型另有不确定性。",
+      "learn": [
+        "将逐像素相机射线输入模型。",
+        "通过相邻法线相对旋转进行迭代细化。",
+        "相机内参、数据增强和损失构造。"
+      ],
+      "application": "设计具备相机几何归纳偏置的人体法线基线。",
+      "boundary": "模型输出法线还需融合成表面；官方简易训练示例规模不等于论文完整训练。",
+      "exercise": "从 baseline_normal 开始，使用相同人体数据比较是否引入射线及相对旋转。",
+      "status": "官方 README 有训练、自定义数据和深度生成法线说明；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2403.00712"
+        },
+        {
+          "label": "官方代码与训练",
+          "url": "https://github.com/baegwangbin/DSINE"
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "name": "法线不确定性",
+      "year": "2021",
+      "venue": "ICCV 2021",
+      "priority": "A 可靠性与加权",
+      "group": "核心",
+      "title": "Estimating and Exploiting the Aleatoric Uncertainty in Surface Normal Estimation",
+      "kind": "联合预测法线与偶然不确定性的监督训练",
+      "template": "不依赖人体模板",
+      "relation": "建议优先实验",
+      "inputs": "RGB、法线标签、有效区域。",
+      "outputs": "法线方向及其概率分布参数。",
+      "learn": [
+        "单位球面上的方向概率分布。",
+        "负对数似然与方向、不确定性联合训练。",
+        "困难像素、边界与可靠性评估。"
+      ],
+      "application": "将规则式法线支持权重升级为可学习、可校准的可靠性估计。",
+      "boundary": "预测不确定性不是自动校准的正确率；需要在人体和目标拍摄条件上验证。",
+      "exercise": "比较无加权、人工权重和学习权重对独立法线误差及最终三维误差的影响。",
+      "status": "论文与官方代码已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2109.09881"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/baegwangbin/surface_normal_uncertainty"
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "name": "MoGe 与 MoGe-2",
+      "year": "2025",
+      "venue": "MoGe：CVPR 2025；MoGe-2：2025 论文",
+      "priority": "A 当前模型训练",
+      "group": "核心",
+      "title": "MoGe / MoGe-2",
+      "publications": [
+        {
+          "title": "MoGe: Unlocking Accurate Monocular Geometry Estimation for Open-Domain Images with Optimal Training Supervision",
+          "year": "2025",
+          "url": "https://arxiv.org/abs/2410.19115"
+        },
+        {
+          "title": "MoGe-2: Accurate Monocular Geometry with Metric Scale and Sharp Details",
+          "year": "2025",
+          "url": "https://arxiv.org/abs/2507.02546"
+        }
+      ],
+      "kind": "跨数据几何预测模型的监督训练与微调",
+      "template": "不依赖人体模板",
+      "relation": "当前项目使用 MoGe-2 观测；训练方案为学习建议",
+      "inputs": "RGB；训练数据可包括深度、归一化相机内参、法线及有效区域。",
+      "outputs": "点图、深度、尺度相关输出及法线等，随具体版本和模型头变化。",
+      "learn": [
+        "Affine-invariant pointmap 与尺度、平移歧义。",
+        "全局和多尺度局部几何监督。",
+        "米制尺度、标签质量和真实/合成混合训练。",
+        "法线头标签来源和平方角度损失。"
+      ],
+      "application": "理解并微调当前几何观测器，优先研究人体数据监督与损失而非仅替换权重。",
+      "boundary": "当前项目对深度采用相对 affine 观测；预测米制能力不等于已在本项目获得独立标定精度。",
+      "exercise": "固定相同人体训练/测试划分，对照只训练预测头与联合微调骨干。",
+      "status": "官方仓库已公开 v1/v2 训练文档；本资料包未训练。",
+      "resources": [
+        {
+          "label": "MoGe 论文",
+          "url": "https://arxiv.org/abs/2410.19115"
+        },
+        {
+          "label": "MoGe-2 论文",
+          "url": "https://arxiv.org/abs/2507.02546"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/microsoft/MoGe"
+        },
+        {
+          "label": "训练教程",
+          "url": "https://github.com/microsoft/MoGe/blob/main/docs/train.md"
+        },
+        {
+          "label": "法线头说明",
+          "url": "https://github.com/microsoft/MoGe/blob/main/docs/normal.md"
+        }
+      ]
+    },
+    {
+      "id": "P08",
+      "name": "Sapiens 与 Sapiens2",
+      "year": "2024 / 2026",
+      "venue": "Sapiens：2024；Sapiens2：2026",
+      "priority": "A 人体专用微调",
+      "group": "核心",
+      "title": "Sapiens / Sapiens2",
+      "publications": [
+        {
+          "title": "Sapiens: Foundation for Human Vision Models",
+          "year": "2024",
+          "url": "https://arxiv.org/abs/2408.12569"
+        },
+        {
+          "title": "Sapiens2",
+          "year": "2026",
+          "url": "https://arxiv.org/abs/2604.21681"
+        }
+      ],
+      "kind": "人体领域预训练骨干与稠密任务头微调",
+      "template": "不以 SMPL 为必需预测输入",
+      "relation": "当前项目使用一代 Sapiens；Sapiens2 为后续实验建议",
+      "inputs": "人体 RGB；法线任务需单位向量标签；pointmap 任务需相机坐标系逐像素三维点。",
+      "outputs": "按任务预测分割、法线、pointmap 等。",
+      "learn": [
+        "人体领域预训练与高分辨率特征。",
+        "任务头、训练配置、数据集类与微调。",
+        "法线和 pointmap 的标签坐标约定。"
+      ],
+      "application": "构造人体专用几何观测网络，以较小预训练模型和自有数据开始微调。",
+      "boundary": "人体法线模型不是肌肉解剖测量模型；Sapiens2 不代表当前项目已接入。",
+      "exercise": "先用官方 NORMAL 数据格式微调，再与未微调模型在按人隔离的测试集比较。",
+      "status": "Sapiens2 官方 NORMAL/POINTMAP 训练教程已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "Sapiens 论文",
+          "url": "https://arxiv.org/abs/2408.12569"
+        },
+        {
+          "label": "Sapiens 官方代码",
+          "url": "https://github.com/facebookresearch/sapiens"
+        },
+        {
+          "label": "Sapiens2 论文",
+          "url": "https://arxiv.org/abs/2604.21681"
+        },
+        {
+          "label": "Sapiens2 官方代码",
+          "url": "https://github.com/facebookresearch/sapiens2"
+        },
+        {
+          "label": "法线训练教程",
+          "url": "https://github.com/facebookresearch/sapiens2/blob/main/docs/train/NORMAL.md"
+        },
+        {
+          "label": "Pointmap 训练教程",
+          "url": "https://github.com/facebookresearch/sapiens2/blob/main/docs/train/POINTMAP.md"
+        }
+      ]
+    },
+    {
+      "id": "P09",
+      "name": "NeuS",
+      "year": "2021",
+      "venue": "NeurIPS 2021",
+      "priority": "A 连续曲面优化基础",
+      "group": "核心",
+      "title": "NeuS: Learning Neural Implicit Surfaces by Volume Rendering for Multi-view Reconstruction",
+      "kind": "主要针对单个静态对象或场景优化神经场",
+      "template": "不依赖人体模板",
+      "relation": "建议优先实验",
+      "inputs": "多视图照片和相机参数。",
+      "outputs": "SDF 场、颜色场及提取的表面网格。",
+      "learn": [
+        "SDF 到体渲染权重的转换与几何偏差。",
+        "射线采样、颜色网络和 Eikonal 正则。",
+        "用图像损失优化连续曲面并提取网格。"
+      ],
+      "application": "为照片约束自由表面建立可微优化框架。",
+      "boundary": "单对象优化不同于训练一个能泛化到所有人的前馈模型；人体需处理跨照片形变。",
+      "exercise": "用已知相机、静态几何和独立 GT 运行一个对象，分别比较颜色与几何指标。",
+      "status": "论文与作者项目已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2106.10689"
+        },
+        {
+          "label": "作者项目与代码入口",
+          "url": "https://lingjie0206.github.io/papers/NeuS/index.htm"
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "name": "MonoSDF",
+      "year": "2022",
+      "venue": "NeurIPS 2022",
+      "priority": "A 当前联合优化重点",
+      "group": "核心",
+      "title": "MonoSDF: Exploring Monocular Geometric Cues for Neural Implicit Surface Reconstruction",
+      "kind": "针对单个静态场景的几何先验辅助联合优化",
+      "template": "不依赖人体模板",
+      "relation": "建议优先实验",
+      "inputs": "多视图 RGB、相机、单目深度与法线线索。",
+      "outputs": "联合优化的连续表面及网格。",
+      "learn": [
+        "深度、法线、RGB 对 SDF 的联合监督。",
+        "深度尺度与偏移对齐。",
+        "几何损失、Eikonal 与不同隐式表示的比较。"
+      ],
+      "application": "最直接参考：将 MoGe/Sapiens 观测纳入联合几何优化。",
+      "boundary": "单目预测先验不能充当独立真值；静态场景结果不直接代表转身人体。",
+      "exercise": "在相同输入上做 RGB、RGB+深度、RGB+法线和全部线索四组消融。",
+      "status": "作者项目和官方代码已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文与作者项目",
+          "url": "https://niujinshuchong.github.io/monosdf/"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/autonomousvision/monosdf"
+        }
+      ]
+    },
+    {
+      "id": "P11",
+      "name": "SparseNeuS",
+      "year": "2022",
+      "venue": "ECCV 2022",
+      "priority": "B 泛化模型进阶",
+      "group": "核心",
+      "title": "SparseNeuS: Fast Generalizable Neural Surface Reconstruction from Sparse Views",
+      "kind": "跨数据预训练与单对象微调结合",
+      "template": "不依赖人体模板",
+      "relation": "后续拓展",
+      "inputs": "稀疏多视图照片和相机参数。",
+      "outputs": "可泛化或微调后的 SDF 表面。",
+      "learn": [
+        "多视图特征到几何编码体积。",
+        "SDF 解码与粗到细推理。",
+        "预训练泛化和单对象微调的成本与作用。"
+      ],
+      "application": "探索少量照片快速生成自由人体表面的模型构造。",
+      "boundary": "稀疏视图能力受视图重叠、相机、姿态与数据分布影响。",
+      "exercise": "分别评价不微调和固定预算微调，按人体身份隔离验证。",
+      "status": "论文和会议全文已核验；本资料包未核验完整训练复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2206.05737"
+        },
+        {
+          "label": "会议全文 PDF",
+          "url": "https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136920210.pdf"
+        }
+      ]
+    },
+    {
+      "id": "P12",
+      "name": "ECON",
+      "year": "2023",
+      "venue": "CVPR 2023",
+      "priority": "B 法线积分组件精读",
+      "group": "核心",
+      "title": "ECON: Explicit Clothed Humans Optimized via Normal Integration",
+      "kind": "学习型观测与法线积分、几何拼合相结合",
+      "template": "原方法依赖 SMPL-X",
+      "relation": "建议研究组件；不是无模板直接替代",
+      "inputs": "单张人体照片、预测法线及 SMPL-X 基础几何。",
+      "outputs": "经法线积分与拼合得到的着衣人体表面。",
+      "learn": [
+        "d-BiNI 与低频位置/高频法线约束。",
+        "轮廓边界、积分漂移和前后表面拼合。",
+        "显式、隐式几何组件的组合。"
+      ],
+      "application": "借鉴当前外包络基础上的受约束法线积分。",
+      "boundary": "迁移到无模板路线时，需要重新设计位置、遮挡和边界约束来源。",
+      "exercise": "以已知外包络替代低频参考做小实验，检查凹陷恢复和低频漂移。",
+      "status": "论文与官方代码已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "会议论文 PDF",
+          "url": "https://openaccess.thecvf.com/content/CVPR2023/papers/Xiu_ECON_Explicit_Clothed_Humans_Optimized_via_Normal_Integration_CVPR_2023_paper.pdf"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/YuliangXiu/ECON"
+        }
+      ]
+    },
+    {
+      "id": "E01",
+      "name": "PIFuHD",
+      "year": "2020",
+      "venue": "CVPR 2020",
+      "priority": "C 多尺度选读",
+      "group": "进阶",
+      "title": "PIFuHD: Multi-Level Pixel-Aligned Implicit Function for High-Resolution 3D Human Digitization",
+      "kind": "多层级人体隐式预测网络",
+      "template": "核心为图像条件隐式函数",
+      "relation": "后续拓展",
+      "inputs": "单张人体照片及法线等辅助线索。",
+      "outputs": "多尺度隐式人体表面。",
+      "learn": [
+        "Coarse-to-fine 层级。",
+        "全局形状与局部高分辨率特征。",
+        "法线辅助预测。"
+      ],
+      "application": "学习整体比例和细节分支的网络构造。",
+      "boundary": "高图像分辨率与密集网格不等于毫米准确度；不能默认官方训练流程完整。",
+      "exercise": "对照单尺度和多尺度特征，报告局部几何误差。",
+      "status": "论文、官方项目与代码已核验；完整训练流程未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2004.00452"
+        },
+        {
+          "label": "作者项目",
+          "url": "https://shunsukesaito.github.io/PIFuHD/"
+        },
+        {
+          "label": "官方代码",
+          "url": "https://github.com/facebookresearch/pifuhd"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "name": "Neuralangelo",
+      "year": "2023",
+      "venue": "CVPR 2023",
+      "priority": "C 高细节优化选读",
+      "group": "进阶",
+      "title": "Neuralangelo: High-Fidelity Neural Surface Reconstruction",
+      "kind": "单场景神经表面优化",
+      "template": "不依赖人体模板",
+      "relation": "后续拓展",
+      "inputs": "静态场景多视图图像和相机。",
+      "outputs": "高细节隐式表面及网格。",
+      "learn": [
+        "多分辨率 hash grid。",
+        "数值梯度和曲率正则。",
+        "粗到细训练课程。"
+      ],
+      "application": "研究细节、平滑和优化稳定性。",
+      "boundary": "静态场景/视频采集条件不等于八张非刚性人体照片。",
+      "exercise": "固定采集与预算，比较编码和正则对独立几何误差的影响。",
+      "status": "官方项目和论文已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2306.03092"
+        },
+        {
+          "label": "官方项目与代码入口",
+          "url": "https://research.nvidia.com/labs/dir/neuralangelo/"
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "name": "MoGe-3",
+      "year": "2026",
+      "venue": "2026 预印本",
+      "priority": "C MoGe-2 之后选读",
+      "group": "进阶",
+      "title": "Fine-Detail Monocular Geometry Estimation with Self-Guided Sparse Volumetric Refinement",
+      "kind": "预训练 MoGe-2 上的三维细化训练",
+      "template": "不依赖人体模板",
+      "relation": "后续拓展；当前项目未接入",
+      "inputs": "RGB 和初始点图特征；训练需几何监督。",
+      "outputs": "细化后的单目几何。",
+      "learn": [
+        "点图向稀疏三维体积的提升。",
+        "三维细化与二维特征混合的区别。",
+        "多次迭代监督和细化数据管线。"
+      ],
+      "application": "研究三维空间中的局部几何 refinement。",
+      "boundary": "新模型在本项目人体上的收益需要独立实验。",
+      "exercise": "使用完全相同的人体测试集比较 v2/v3，分开评价整体与局部误差。",
+      "status": "2026 论文与官方训练文档已核验；本资料包未复现。",
+      "resources": [
+        {
+          "label": "论文",
+          "url": "https://arxiv.org/abs/2607.17967"
+        },
+        {
+          "label": "官方训练文档",
+          "url": "https://github.com/microsoft/MoGe/blob/main/docs/train.md"
+        }
+      ]
+    }
+  ],
+  "training_and_data": [
+    {
+      "name": "MoGe 官方训练教程",
+      "focus": "数据格式、v1/v2 微调、v3 细化训练和配置。",
+      "url": "https://github.com/microsoft/MoGe/blob/main/docs/train.md"
+    },
+    {
+      "name": "Sapiens2 法线训练教程",
+      "focus": "单位向量法线标签、数据类、配置与启动脚本。",
+      "url": "https://github.com/facebookresearch/sapiens2/blob/main/docs/train/NORMAL.md"
+    },
+    {
+      "name": "Sapiens2 Pointmap 训练教程",
+      "focus": "相机系逐像素三维点标签，可由深度和内参或网格渲染构造。",
+      "url": "https://github.com/facebookresearch/sapiens2/blob/main/docs/train/POINTMAP.md"
+    },
+    {
+      "name": "Omnidata 数据构造流程",
+      "focus": "从三维扫描生成 RGB、深度、法线和相机等监督；各组成数据许可需分别核对。",
+      "url": "https://github.com/EPFL-VILAB/omnidata"
+    },
+    {
+      "name": "THuman 数据说明",
+      "focus": "人体纹理扫描与数据组织。主要是着衣表面；当前协议限非商业研究，产品训练需另行解决许可和皮肤真值来源。",
+      "url": "https://github.com/ytrock/THuman2.0-Dataset"
+    }
+  ]
+}

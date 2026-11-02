@@ -1,0 +1,53 @@
+﻿P08  Sapiens 与 Sapiens2
+Sapiens / Sapiens2
+年份与发表信息：Sapiens：2024；Sapiens2：2026
+阅读优先级：A 人体专用微调
+问题与训练类型：人体领域预训练骨干与稠密任务头微调
+模板依赖：不以 SMPL 为必需预测输入
+与当前项目关系：当前项目使用一代 Sapiens；Sapiens2 为后续实验建议
+
+一 输入与输出
+输入：人体 RGB；法线任务需单位向量标签；pointmap 任务需相机坐标系逐像素三维点。
+输出：按任务预测分割、法线、pointmap 等。
+
+二 重点学习内容
+1. 人体领域预训练与高分辨率特征。
+2. 任务头、训练配置、数据集类与微调。
+3. 法线和 pointmap 的标签坐标约定。
+
+三 对 BodyTrace 的建议用途
+构造人体专用几何观测网络，以较小预训练模型和自有数据开始微调。
+
+四 适用条件与边界
+人体法线模型不是肌肉解剖测量模型；Sapiens2 不代表当前项目已接入。
+
+五 建议实践
+先用官方 NORMAL 数据格式微调，再与未微调模型在按人隔离的测试集比较。
+
+六 资源与复现状态
+Sapiens2 官方 NORMAL/POINTMAP 训练教程已核验；本资料包未复现。
+资源核验日期：2026-10-19
+Sapiens 论文：
+https://arxiv.org/abs/2408.12569
+Sapiens 官方代码：
+https://github.com/facebookresearch/sapiens
+Sapiens2 论文：
+https://arxiv.org/abs/2604.21681
+Sapiens2 官方代码：
+https://github.com/facebookresearch/sapiens2
+法线训练教程：
+https://github.com/facebookresearch/sapiens2/blob/main/docs/train/NORMAL.md
+Pointmap 训练教程：
+https://github.com/facebookresearch/sapiens2/blob/main/docs/train/POINTMAP.md
+
+本条目包含的独立论文
+Sapiens: Foundation for Human Vision Models
+2024
+https://arxiv.org/abs/2408.12569
+Sapiens2
+2026
+https://arxiv.org/abs/2604.21681
+
+标注口径：论文方法描述依据上述一手资料；优先级、项目用途和实践任务为本项目学习建议。
+“链接已核验”不等于“完整训练代码可用”，也不等于“已复现或已在本项目达到精度”。
+实际使用代码、模型权重和数据时，分别查看相应资源的许可。

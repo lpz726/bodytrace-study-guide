@@ -1,0 +1,104 @@
+﻿BodyTrace 全部资源链接
+日期：2026-10-19
+
+斯坦福 CS231n
+https://cs231n.stanford.edu/schedule
+
+Szeliski Computer Vision 第二版
+https://szeliski.org/Book/
+
+Multiple View Geometry 第二版
+https://www.robots.ox.ac.uk/~vgg/hzbook/
+
+PyTorch3D 教程目录
+https://pytorch3d.org/tutorials/
+
+PyTorch3D 网格变形实践
+https://pytorch3d.org/tutorials/deform_source_mesh_to_target_mesh
+
+PyTorch3D 照片监督网格实践
+https://pytorch3d.org/tutorials/fit_textured_mesh
+
+MoGe 官方训练教程
+https://github.com/microsoft/MoGe/blob/main/docs/train.md
+
+Sapiens2 法线训练教程
+https://github.com/facebookresearch/sapiens2/blob/main/docs/train/NORMAL.md
+
+Sapiens2 Pointmap 训练教程
+https://github.com/facebookresearch/sapiens2/blob/main/docs/train/POINTMAP.md
+
+Omnidata 数据构造流程
+https://github.com/EPFL-VILAB/omnidata
+
+THuman 数据说明
+https://github.com/ytrock/THuman2.0-Dataset
+
+P01 DeepSDF
+论文：https://arxiv.org/abs/1901.05103
+官方代码：https://github.com/facebookresearch/DeepSDF
+
+P02 PIFu
+论文：https://arxiv.org/abs/1905.05172
+作者项目：https://shunsukesaito.github.io/PIFu/
+官方代码与训练：https://github.com/shunsukesaito/PIFu
+
+P03 MVSNet
+会议论文：https://openaccess.thecvf.com/content_ECCV_2018/html/Yao_Yao_MVSNet_Depth_Inference_ECCV_2018_paper.html
+官方代码：https://github.com/yoyo000/mvsnet
+
+P04 DiffuStereo
+论文：https://arxiv.org/abs/2207.08000
+官方代码：https://github.com/DSaurus/DiffuStereo
+
+P05 DSINE
+论文：https://arxiv.org/abs/2403.00712
+官方代码与训练：https://github.com/baegwangbin/DSINE
+
+P06 法线不确定性
+论文：https://arxiv.org/abs/2109.09881
+官方代码：https://github.com/baegwangbin/surface_normal_uncertainty
+
+P07 MoGe 与 MoGe-2
+MoGe 论文：https://arxiv.org/abs/2410.19115
+MoGe-2 论文：https://arxiv.org/abs/2507.02546
+官方代码：https://github.com/microsoft/MoGe
+训练教程：https://github.com/microsoft/MoGe/blob/main/docs/train.md
+法线头说明：https://github.com/microsoft/MoGe/blob/main/docs/normal.md
+
+P08 Sapiens 与 Sapiens2
+Sapiens 论文：https://arxiv.org/abs/2408.12569
+Sapiens 官方代码：https://github.com/facebookresearch/sapiens
+Sapiens2 论文：https://arxiv.org/abs/2604.21681
+Sapiens2 官方代码：https://github.com/facebookresearch/sapiens2
+法线训练教程：https://github.com/facebookresearch/sapiens2/blob/main/docs/train/NORMAL.md
+Pointmap 训练教程：https://github.com/facebookresearch/sapiens2/blob/main/docs/train/POINTMAP.md
+
+P09 NeuS
+论文：https://arxiv.org/abs/2106.10689
+作者项目与代码入口：https://lingjie0206.github.io/papers/NeuS/index.htm
+
+P10 MonoSDF
+论文与作者项目：https://niujinshuchong.github.io/monosdf/
+官方代码：https://github.com/autonomousvision/monosdf
+
+P11 SparseNeuS
+论文：https://arxiv.org/abs/2206.05737
+会议全文 PDF：https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136920210.pdf
+
+P12 ECON
+会议论文 PDF：https://openaccess.thecvf.com/content/CVPR2023/papers/Xiu_ECON_Explicit_Clothed_Humans_Optimized_via_Normal_Integration_CVPR_2023_paper.pdf
+官方代码：https://github.com/YuliangXiu/ECON
+
+E01 PIFuHD
+论文：https://arxiv.org/abs/2004.00452
+作者项目：https://shunsukesaito.github.io/PIFuHD/
+官方代码：https://github.com/facebookresearch/pifuhd
+
+E02 Neuralangelo
+论文：https://arxiv.org/abs/2306.03092
+官方项目与代码入口：https://research.nvidia.com/labs/dir/neuralangelo/
+
+E03 MoGe-3
+论文：https://arxiv.org/abs/2607.17967
+官方训练文档：https://github.com/microsoft/MoGe/blob/main/docs/train.md
